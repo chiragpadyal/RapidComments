@@ -1,0 +1,75 @@
+<div class="comment">
+  <div class="comment-image-container">
+    <img src="{{ comments.user.picture }}" />
+  </div>
+  <div class="comment-right-part">
+    <div class="comment-content">
+      <div class="comment-author">{{ comments.user.username }}</div>
+      <div class="comment-date">{{ comments.createdAt }}</div>
+
+      &nbsp;
+      {{ replyTo ? "  Replied to. @" + replyTo : "" }}
+    </div>
+
+    <div class="comment-text">{{ comments.message }}</div>
+
+    <app-comment-form
+      buttonVal="Update"
+      [hasCancelButton]="hasCancelButton"
+      [hasCancelButtonForReply]="false"
+      [commentMessage]="comments.message"
+      [commentId]="comments.id"
+    ></app-comment-form>
+
+    <div class="comment-actions">
+      <div class="comment-action">
+        <button (click)="hasCancelButton = !hasCancelButton">Reply</button>
+      </div>
+      <div class="comment-action">
+        <button (click)="hasCancelButtonForReply = !hasCancelButtonForReply">
+          Edit
+        </button>
+      </div>
+      <div class="comment-action">
+        {{ commentData.like }}
+        <button (click)="likeComment(comments.id)">Like</button>
+      </div>
+      <div class="comment-action">
+        {{ commentData.dislike }}
+        <button (click)="dislikeComment(comments.id)">DisLike</button>
+      </div>
+      <div class="comment-action"></div>
+    </div>
+    <app-comment-form
+      buttonVal="Reply"
+      [hasCancelButtonForReply]="hasCancelButtonForReply"
+      [hasCancelButton]="false"
+      [commentId]="comments.id"
+    ></app-comment-form>
+    <hr class="h-px my-2 bg-gray-800 border-0 dark:bg-gray-700" />
+
+    <div class="replies" *ngIf="comments.linkedComments">
+      <app-comments
+        *ngFor="let linkedComment of comments.linkedComments"
+        [comments]="linkedComment"
+        [replyTo]="comments.user.username"
+      ></app-comments>
+    </div>
+  </div>
+</div>
+
+<!-- <p>comments works!</p>
+<div>
+  Send By: {{ comments.user.username }} |
+  {{ replyTo ? "ReplyTo: " + replyTo : "" }}
+  <br />
+  {{ comments.message }}
+  {{ comments.createdAt }}
+  <br />
+  -------------------------
+</div>
+<app-comments
+  *ngFor="let linkedComment of comments.linkedComments"
+  [comments]="linkedComment"
+  [replyTo]="comments.user.username"
+></app-comments> -->

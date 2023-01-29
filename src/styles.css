@@ -1,5 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .comments {
-  margin-top: 20px;
+  margin-top: 21px;
 }
 
 .comments-title {
@@ -70,6 +75,13 @@
   margin-right: 8px;
   font-size: 20px;
   color: rgb(59, 130, 246);
+  justify-self: center;
+}
+
+.comment-date {
+  margin-right: 8px;
+  font-size: 15px;
+  justify-self: center;
 }
 
 .comment-text {

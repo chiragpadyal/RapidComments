@@ -1,0 +1,34 @@
+<form *ngIf="hasCancelButton || hasCancelButtonForReply">
+  <div>
+    <label class="sr-only" for="message">Message</label>
+    <textarea
+      class="w-full rounded-lg border-gray-800 border-2 p-3 text-sm"
+      placeholder="Write Your Comment!"
+      rows="8"
+      id="message"
+      type="text"
+      [(ngModel)]="commentMessage"
+      name="message"
+    ></textarea>
+  </div>
+  <button
+    class="comment-form-button"
+    (click)="
+      buttonVal === 'Reply'
+        ? handleReply()
+        : buttonVal === 'Update'
+        ? handleUpdate()
+        : handleSubmit()
+    "
+  >
+    {{ buttonVal }}
+  </button>
+
+  <!-- <button
+    *ngIf="hasCancelButton || hasCancelButtonForReply"
+    class="comment-form-button"
+    (click)="handleCancel()"
+  >
+    Cancel
+  </button> -->
+</form>
