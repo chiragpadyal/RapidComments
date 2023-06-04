@@ -34,8 +34,9 @@
   </summary>
 
   <div class="comment-body">
-    <p>
-      {{ comments.content }}
+    <p [innerHTML]="comments.content | safeHtml">
+      <!-- main message body -->
+      <!-- {{ comments.content | html}} -->
     </p>
     <div class="flex space-x-1">
       <button

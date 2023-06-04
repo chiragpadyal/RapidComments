@@ -14,6 +14,10 @@ import { Comment } from "../models/Comments.model";
 import { Reply } from "../models/Reply.model";
 import { User } from "../models/User.model";
 
+import "quill-emoji/dist/quill-emoji.js";
+
+// import { emojis } from "@nutrify/ngx-emoji-mart-picker/ngx-emoji/esm5/data/emojis";
+
 @Component({
   selector: "app-comment-form",
   templateUrl: "./comment-form.component.html",
@@ -34,6 +38,21 @@ export class CommentFormComponent {
 
   @Output() dataEvent = new EventEmitter<Comment>();
   @Output() dataEventToComment = new EventEmitter<Comment>();
+
+  //emoji
+  modules = {
+    "emoji-shortname": true,
+    "emoji-toolbar": true,
+    toolbar: {
+      container: [
+        ["bold", "italic", "underline", "strike"],
+        ["emoji"],
+        [{ color: [] }, { background: [] }],
+        [{ font: [] }],
+        [{ align: [] }],
+      ],
+    },
+  };
 
   commentVal: Comment = new Comment();
   commentSend: Comment = new Comment();
@@ -107,38 +126,6 @@ export class CommentFormComponent {
   ngOnDestroy() {
     this.userSub.unsubscribe();
   }
-
-  // handleUpdate() {
-  //   this.auth.user$.subscribe({
-  //     next: (data) => {
-  //       let thread = localStorage.getItem("threadId");
-  //       if (data && typeof data !== "undefined") {
-  //         if (typeof data.sub === "string") {
-  //           this.commentService.getUser(data.sub).subscribe({
-  //             next: (e: User) => {
-  //               this.commentVal.user = e.id;
-  //               this.commentVal.message = this.commentMessage;
-  //               if (thread) this.commentVal.thread = thread;
-  //               this.commentService
-  //                 .updateCommentsById(this.commentId, this.commentVal)
-  //                 .subscribe({
-  //                   next: (e: Comment) => {
-  //                     console.log(Comment);
-  //                   },
-  //                   error: () => {},
-  //                 });
-  //             },
-  //             error: () => {},
-  //             complete: () => {
-  //               this.commentMessage = "";
-  //             },
-  //           });
-  //         }
-  //       }
-  //     },
-  //     error: () => {},
-  //   });
-  // }
 
   handleReply() {
     console.log("once"); //runs once

@@ -11,14 +11,25 @@ import { FormsModule } from "@angular/forms";
 import { AuthHttpInterceptor, AuthModule } from "@auth0/auth0-angular";
 import { CommentsComponent } from "./comments/comments.component";
 import { CommentFormComponent } from "./comment-form/comment-form.component";
+
+import { SafeHtmlPipe } from "./safe-html.pipe";
+
+import { QuillModule } from "ngx-quill";
+
 @NgModule({
-  declarations: [AppComponent, CommentsComponent, CommentFormComponent],
+  declarations: [
+    AppComponent,
+    CommentsComponent,
+    CommentFormComponent,
+    SafeHtmlPipe,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
     FormsModule,
+    QuillModule.forRoot(),
     AuthModule.forRoot({
       domain: "dev-qx1buviid5yofprn.us.auth0.com",
       clientId: "OwC91EEAljZBjrZ8ISSaZjPSyCwNlpLG",

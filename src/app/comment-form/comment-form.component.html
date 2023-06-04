@@ -1,16 +1,17 @@
 <form *ngIf="hasCancelButton || hasCancelButtonForReply">
   <div>
     <label class="sr-only" for="message">Message</label>
-    <textarea
-      class="w-full rounded-lg border-gray-800 border-2 p-3 text-sm"
-      placeholder="Write Your Comment!"
-      rows="8"
-      id="message"
-      type="text"
-      [(ngModel)]="commentMessage"
-      name="message"
-    ></textarea>
   </div>
+  <quill-editor
+    [(ngModel)]="commentMessage"
+    trackChanges="all"
+    [modules]="modules"
+    class="w-full rounded-lg text-sm"
+    placeholder="Write Your Comment!"
+    id="message"
+    name="message"
+    style="height: 120px"
+  ></quill-editor>
   <button
     class="comment-form-button"
     (click)="buttonVal === 'Reply' ? handleReply() : handleSubmit()"
