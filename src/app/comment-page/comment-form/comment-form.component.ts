@@ -7,12 +7,10 @@ import {
 } from "@angular/core";
 import { AuthService } from "@auth0/auth0-angular";
 import { map, take } from "rxjs";
-import { CommentsService } from "../comments.service";
-// import { Comment } from "../models/Comments.model";
-// import { CommentNew } from "../models/CommentNew.model";
-import { Comment } from "../models/Comments.model";
-import { Reply } from "../models/Reply.model";
-import { User } from "../models/User.model";
+import { CommentsService } from "../../comments.service";
+import { Comment } from "../../models/Comments.model";
+import { Reply } from "../../models/Reply.model";
+import { User } from "../../models/User.model";
 
 import "quill-emoji/dist/quill-emoji.js";
 
@@ -46,10 +44,8 @@ export class CommentFormComponent {
     toolbar: {
       container: [
         ["bold", "italic", "underline", "strike"],
-        ["emoji"],
         [{ color: [] }, { background: [] }],
-        [{ font: [] }],
-        [{ align: [] }],
+        ["emoji"],
       ],
     },
   };

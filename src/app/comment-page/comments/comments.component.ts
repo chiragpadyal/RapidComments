@@ -2,11 +2,14 @@ import { ViewportScroller } from "@angular/common";
 import { Component, Input, OnInit, ChangeDetectorRef } from "@angular/core";
 import { AuthService } from "@auth0/auth0-angular";
 import { map, take } from "rxjs";
-import { CommentsService } from "../comments.service";
-import { CommentMeta, Vote } from "../models/CommentMeta.model";
-import { Comment } from "../models/Comments.model";
-import { Page } from "../models/Page.model";
-import { User } from "../models/User.model";
+import { CommentsService } from "src/app/comments.service";
+import { CommentMeta, Vote } from "src/app/models/CommentMeta.model";
+import { Comment } from "src/app/models/Comments.model";
+
+import { Page } from "../../models/Page.model";
+import { User } from "../../models/User.model";
+
+Comment;
 
 @Component({
   selector: "app-comments",
@@ -24,7 +27,7 @@ export class CommentsComponent implements OnInit {
   isLast: boolean = false;
 
   voteData = Vote;
-  threadId: String = "1";
+  threadId: String = "";
 
   @Input()
   replyTo: String = "";
@@ -63,9 +66,10 @@ export class CommentsComponent implements OnInit {
   }
 
   nextReply(comments: Comment) {
-    if (comments.children.length >= 2) {
+    let thread = localStorage.getItem("threadId");
+    if (comments.children.length >= 2 && thread) {
       this.commentsService
-        .getRepliesByThreadByPage(this.threadId, comments, this.currentPage + 1)
+        .getRepliesByThreadByPage(thread, comments, this.currentPage + 1)
         .subscribe({
           next: (data: Page) => {
             this.comments.children.push(...data.comments[0].children);
