@@ -1,5 +1,7 @@
+import { User } from "@auth0/auth0-angular";
+
 export class CommentNew {
   "message": String;
-  "user": number;
+  "user": User;
   "thread": String;
 }

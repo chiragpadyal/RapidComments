@@ -13,13 +13,7 @@
   </div>
   <button
     class="comment-form-button"
-    (click)="
-      buttonVal === 'Reply'
-        ? handleReply()
-        : buttonVal === 'Update'
-        ? handleUpdate()
-        : handleSubmit()
-    "
+    (click)="buttonVal === 'Reply' ? handleReply() : handleSubmit()"
   >
     {{ buttonVal }}
   </button>

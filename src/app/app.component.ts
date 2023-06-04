@@ -1,23 +1,39 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+} from "@angular/core";
 import { AuthService } from "@auth0/auth0-angular";
+import { map, take } from "rxjs";
 import { CommentsService } from "./comments.service";
 import { Comment } from "./models/Comments.model";
+import { Page } from "./models/Page.model";
+import { User } from "./models/User.model";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   comments: Comment[] = [];
   title = "RapidComment";
-  threadId = "0aae614b-ddb1-42ce-ae44-ce1c0670badb";
+  threadId = "1";
+  pageNo: number = 0;
+  totalPage: number = 1;
+  currentPage: number = 0;
+  receivedData: Comment = new Comment();
 
   constructor(
     @Inject(DOCUMENT) public document: Document,
     public auth: AuthService,
-    private commentsService: CommentsService
+    private commentsService: CommentsService,
+    private cd: ChangeDetectorRef
   ) {}
   ngOnInit(): void {
     localStorage.setItem("threadId", this.threadId);
@@ -29,11 +45,93 @@ export class AppComponent implements OnInit {
       }
     });
 
-    this.commentsService.getCommentsByThread(this.threadId).subscribe({
-      next: (data: Comment[]) => {
-        this.comments = data;
-      },
-      error: () => {},
-    });
+    // this.commentsService.getCommentsByThread(this.threadId).subscribe({
+    //   next: (data: Comment[]) => {
+    //     this.comments = data;
+    //   },
+    //   error: () => {},
+    // });
+
+    this.auth.user$
+      .pipe(
+        take(1),
+        map((data) => data?.sub)
+      )
+      .subscribe({
+        next: (sub) => {
+          console.log(sub); //runs once
+          let thread = localStorage.getItem("threadId");
+          if (typeof sub === "string" && typeof thread === "string") {
+            let user: User = new User();
+            user.user_id = sub;
+            this.commentsService
+              .getCommentsByThreadByPage(this.threadId, this.pageNo, user)
+              .subscribe({
+                next: (data: Page) => {
+                  this.comments = data.comments;
+                  this.totalPage = data.totalPages;
+                  this.currentPage = data.currentPage;
+                  this.cd.detectChanges(); // manually trigger change detection
+                },
+                error: () => {},
+              });
+          }
+        },
+        error: () => {},
+      });
+  }
+
+  nextPage() {
+    if (this.totalPage > this.currentPage + 1) {
+      // console.log(
+      //   `currentPage: ${this.currentPage} TotalPage ${this.totalPage} PageNo. ${
+      //     this.pageNo + 1
+      //   } Comments: ${this.comments[0]["content"]}`
+      // );
+
+      this.auth.user$
+        .pipe(
+          take(1),
+          map((data) => data?.sub)
+        )
+        .subscribe({
+          next: (sub) => {
+            console.log(sub); //runs once
+            let thread = localStorage.getItem("threadId");
+            if (typeof sub === "string" && typeof thread === "string") {
+              let user: User = new User();
+              user.user_id = sub;
+              this.pageNo = this.currentPage + 1;
+              this.commentsService
+                .getCommentsByThreadByPage(this.threadId, this.pageNo, user)
+                .subscribe({
+                  next: (data: Page) => {
+                    this.comments.push(...data.comments);
+                    this.totalPage = data.totalPages;
+                    this.currentPage = data.currentPage;
+                    this.cd.detectChanges();
+                  },
+                  error: () => {},
+                });
+            }
+          },
+          error: () => {},
+        });
+    }
+  }
+
+  receiveData(data: Comment) {
+    this.receivedData = data;
+    // console.log(data.content);
+    this.comments.unshift(data);
+    this.cd.detectChanges();
+  }
+
+  @HostListener("window:scroll", [])
+  onScroll(): void {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      // Load Your Data Here
+      this.nextPage();
+    }
   }
 }

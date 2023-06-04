@@ -11,21 +11,14 @@ import { FormsModule } from "@angular/forms";
 import { AuthHttpInterceptor, AuthModule } from "@auth0/auth0-angular";
 import { CommentsComponent } from "./comments/comments.component";
 import { CommentFormComponent } from "./comment-form/comment-form.component";
-
 @NgModule({
-  declarations: [
-    AppComponent,
-    CommentsComponent,
-    CommentFormComponent,
-    ProductPageComponent,
-  ],
+  declarations: [AppComponent, CommentsComponent, CommentFormComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
     FormsModule,
-
     AuthModule.forRoot({
       domain: "dev-qx1buviid5yofprn.us.auth0.com",
       clientId: "OwC91EEAljZBjrZ8ISSaZjPSyCwNlpLG",

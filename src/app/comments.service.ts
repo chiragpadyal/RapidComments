@@ -2,10 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Comment } from "./models/Comments.model";
-import { CommentNew } from "./models/CommentNew.model";
 import { User } from "./models/User.model";
-import { Reply } from "./models/Reply.model";
-import { LikeDislike } from "./models/LikeDislike.model";
+import { Page } from "./models/Page.model";
+import { CommentMeta } from "./models/CommentMeta.model";
 
 @Injectable({
   providedIn: "root",
@@ -17,52 +16,87 @@ export class CommentsService {
 
   getCommentsByThread(threadId: String): Observable<Comment[]> {
     return this.http.get<Comment[]>(
-      `${this.urlApi}/api/getCommentsByThread/${threadId}`
+      `${this.urlApi}/api/threads/${threadId}/comments`
     );
   }
 
-  createComments(comment: CommentNew): Observable<Comment> {
-    return this.http.post<Comment>(`${this.urlApi}/api/createComment`, comment);
+  getCommentsByThreadByPage(
+    threadId: String,
+    pageno: number,
+    user: User
+  ): Observable<Page> {
+    return this.http.post<Page>(
+      `${this.urlApi}/api/threads/${threadId}/comments/${pageno}`,
+      user
+    );
   }
 
-  createReply(comment: Reply): Observable<Comment> {
-    return this.http.post<Comment>(`${this.urlApi}/api/createComment`, comment);
-  }
-
-  updateCommentsById(
-    commentId: String,
-    comment: CommentNew
-  ): Observable<Comment> {
-    return this.http.put<Comment>(
-      `${this.urlApi}/api/updateComment/${commentId}`,
+  createComments(comment: Comment, threadId: String): Observable<Comment> {
+    return this.http.post<Comment>(
+      `${this.urlApi}/api/threads/${threadId}/comments`,
       comment
     );
   }
 
-  // User data
+  getRepliesByThreadByPage(
+    threadId: String,
+    commentId: Comment,
+    pageno: number
+  ): Observable<Page> {
+    return this.http.post<Page>(
+      `${this.urlApi}/api/threads/${threadId}/comments/reply/${pageno}`,
+      commentId
+    );
+  }
+
+  // createReply(comment: Reply): Observable<Comment> {
+  //   return this.http.post<Comment>(`${this.urlApi}/api/createComment`, comment);
+  // }
+
+  // updateCommentsById(
+  //   commentId: String,
+  //   comment: CommentNew
+  // ): Observable<Comment> {
+  //   return this.http.put<Comment>(
+  //     `${this.urlApi}/api/updateComment/${commentId}`,
+  //     comment
+  //   );
+  // }
+
+  // // User data
   getUser(googleToken: string): Observable<User> {
     return this.http.post<User>(`${this.urlApi}/api/admin/users/getUser`, {
       user_id: googleToken,
     });
   }
 
-  //  Like and Dislike
-  likeComment(commentId: String): Observable<any> {
-    return this.http.put<any>(
-      `${this.urlApi}/api/updateComment/${commentId}/dislike`,
-      {}
-    );
-  }
-  dislikeComment(commentId: String): Observable<any> {
-    return this.http.put<any>(
-      `${this.urlApi}/api/updateComment/${commentId}/like`,
-      {}
+  voteComment(
+    threadId: String,
+    commentMeta: CommentMeta
+  ): Observable<CommentMeta> {
+    return this.http.post<CommentMeta>(
+      `${this.urlApi}/api/threads/${threadId}/comments/meta`,
+      commentMeta
     );
   }
 
-  getCommentProp(commentId: String): Observable<LikeDislike> {
-    return this.http.get<LikeDislike>(
-      `${this.urlApi}/api/getCommentProp/{commentId}`
-    );
-  }
+  // //  Like and Dislike
+  // likeComment(commentId: String): Observable<any> {
+  //   return this.http.put<any>(
+  //     `${this.urlApi}/api/updateComment/${commentId}/dislike`,
+  //     {}
+  //   );
+  // }
+  // dislikeComment(commentId: String): Observable<any> {
+  //   return this.http.put<any>(
+  //     `${this.urlApi}/api/updateComment/${commentId}/like`,
+  //     {}
+  //   );
+  // }
+
+  // getCommentProp(commentId: String): Observable<LikeDislike> {
+  //   return this.http.get<LikeDislike>(
+  //     `${this.urlApi}/api/getCommentProp/{commentId}`
+  //   );
+  // }
 }

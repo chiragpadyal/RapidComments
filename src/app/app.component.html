@@ -39,13 +39,21 @@
     </ng-template>
   </div>
 
-  <div class="px-5">
-    <app-comment-form></app-comment-form>
-    <div class="comments-container">
+  <div class="px-3">
+    <app-comment-form (dataEvent)="receiveData($event)"></app-comment-form>
+    <div class="comment-thread">
       <app-comments
         *ngFor="let comment of comments"
         [comments]="comment"
+        [totalPage]="totalPage"
+        [currentPage]="currentPage"
       ></app-comments>
+      <button
+        *ngIf="this.totalPage > this.currentPage + 1"
+        (click)="nextPage()"
+      >
+        Load More
+      </button>
     </div>
   </div>
 </div>

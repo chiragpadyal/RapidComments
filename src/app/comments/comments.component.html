@@ -1,75 +1,207 @@
-<div class="comment">
-  <div class="comment-image-container">
-    <img src="{{ comments.user.picture }}" />
-  </div>
-  <div class="comment-right-part">
-    <div class="comment-content">
-      <div class="comment-author">{{ comments.user.username }}</div>
-      <div class="comment-date">{{ comments.createdAt }}</div>
+<!-- Comment 1 start -->
+<details open class="comment" [id]="'comment-' + comments.id">
+  <a
+    (click)="scrollToElement('comment-' + comments.id)"
+    class="comment-border-link"
+  >
+    <span class="sr-only">Jump to comment-1</span>
+  </a>
 
-      &nbsp;
-      {{ replyTo ? "  Replied to. @" + replyTo : "" }}
-    </div>
-
-    <div class="comment-text">{{ comments.message }}</div>
-
-    <app-comment-form
-      buttonVal="Update"
-      [hasCancelButton]="hasCancelButton"
-      [hasCancelButtonForReply]="false"
-      [commentMessage]="comments.message"
-      [commentId]="comments.id"
-    ></app-comment-form>
-
-    <div class="comment-actions">
-      <div class="comment-action">
-        <button (click)="hasCancelButton = !hasCancelButton">Reply</button>
-      </div>
-      <div class="comment-action">
-        <button (click)="hasCancelButtonForReply = !hasCancelButtonForReply">
-          Edit
+  <summary>
+    <div class="comment-heading">
+      <!-- <div class="comment-voting">
+        <button type="button">
+          <span aria-hidden="true">&#9650;</span>
+          <span class="sr-only">Vote up</span>
         </button>
+        <button type="button">
+          <span aria-hidden="true">&#9660;</span>
+          <span class="sr-only">Vote down</span>
+        </button>
+      </div> -->
+      <div class="profile-image">
+        <img src="{{ comments.user.picture }}" alt="Profile Image" />
       </div>
-      <div class="comment-action">
-        {{ commentData.like }}
-        <button (click)="likeComment(comments.id)">Like</button>
+      <div class="comment-info">
+        <a href="#" class="comment-author">{{ comments.user.username }}</a>
+        <p class="m-0">
+          <!-- {{ comments.createdAt }} &bull;
+          {{ comments.lastModified + " days ago" }} -->
+          13:22:50 &bull; 2 hour ago
+        </p>
       </div>
-      <div class="comment-action">
-        {{ commentData.dislike }}
-        <button (click)="dislikeComment(comments.id)">DisLike</button>
-      </div>
-      <div class="comment-action"></div>
     </div>
+  </summary>
+
+  <div class="comment-body">
+    <p>
+      {{ comments.content }}
+    </p>
+    <div class="flex space-x-1">
+      <button
+        class="flex items-center"
+        style="border: none"
+        (click)="vote(comments, voteData.LIKE)"
+      >
+        <svg
+          class="mr-2 w-4 h-4"
+          width="30"
+          height="32"
+          viewBox="0 0 7.9374998 8.4666669"
+          version="1.1"
+          id="svg12"
+          inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+          sodipodi:docname="upvote_thick.svg"
+          xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+          xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:svg="http://www.w3.org/2000/svg"
+        >
+          <defs id="defs9" />
+          <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+            <path
+              [style]="this.likeState ? 'stroke: #ff0606; fill: #ff0606' : ''"
+              style="
+                fill: none;
+                stroke: #000000;
+                stroke-width: 0.483547;
+                stroke-linecap: butt;
+                stroke-linejoin: miter;
+                stroke-miterlimit: 4;
+                stroke-dasharray: none;
+                stroke-opacity: 1;
+              "
+              d="M 2.8229809,4.1023722 V 7.9745105 H 5.0874057 V 4.1023722 H 7.3518304 L 3.9551933,0.23023379 0.55855608,4.1023722 Z"
+              id="path190"
+              sodipodi:nodetypes="cccccccc"
+            />
+          </g>
+        </svg>
+
+        {{ comments.likes ? comments.likes : 0 }}
+      </button>
+      <button
+        style="border: none"
+        class="flex items-center"
+        (click)="vote(comments, voteData.DISLIKE)"
+      >
+        <svg
+          class="mr-2 w-4 h-4"
+          width="30"
+          height="32"
+          viewBox="0 0 7.9374998 8.4666669"
+          version="1.1"
+          id="svg12"
+          inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+          sodipodi:docname="downvote_think.svg"
+          xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+          xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:svg="http://www.w3.org/2000/svg"
+        >
+          <defs id="defs9" />
+          <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+            <path
+              [style]="
+                this.dislikeState ? 'stroke: #ff0606; fill: #ff0606' : ''
+              "
+              style="
+                fill: none;
+                stroke: #000000;
+                stroke-width: 0.483547;
+                stroke-linecap: butt;
+                stroke-linejoin: miter;
+                stroke-miterlimit: 4;
+                stroke-dasharray: none;
+                stroke-opacity: 1;
+              "
+              d="M 5.0874056,4.1023721 V 0.23023383 H 2.8229808 V 4.1023721 H 0.55855604 L 3.9551932,7.9745105 7.3518304,4.1023721 Z"
+              id="path190"
+              sodipodi:nodetypes="cccccccc"
+            />
+          </g>
+        </svg>
+
+        {{ comments.dislikes ? comments.dislikes : 0 }}
+      </button>
+
+      <button
+        type="button "
+        data-toggle="reply-form"
+        data-target="comment-1-reply-form"
+        (click)="hasCancelButtonForReply = !hasCancelButtonForReply"
+        class="flex items-center"
+        style="border: none"
+      >
+        <svg
+          style="width: 16; height: 16; padding-right: 4px"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+        >
+          <path
+            d="M205 34.8c11.5 5.1 19 16.6 19 29.2v64H336c97.2 0 176 78.8 176 176c0 113.3-81.5 163.9-100.2 174.1c-2.5 1.4-5.3 1.9-8.1 1.9c-10.9 0-19.7-8.9-19.7-19.7c0-7.5 4.3-14.4 9.8-19.5c9.4-8.8 22.2-26.4 22.2-56.7c0-53-43-96-96-96H224v64c0 12.6-7.4 24.1-19 29.2s-25 3-34.4-5.4l-160-144C3.9 225.7 0 217.1 0 208s3.9-17.7 10.6-23.8l160-144c9.4-8.5 22.9-10.6 34.4-5.4z"
+          />
+        </svg>
+        Reply
+      </button>
+      <button type="button items-center	" class="flex" style="border: none">
+        <svg
+          style="width: 16; height: 16; padding-right: 4px"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 448 512"
+        >
+          <path
+            d="M48 24C48 10.7 37.3 0 24 0S0 10.7 0 24V64 350.5 400v88c0 13.3 10.7 24 24 24s24-10.7 24-24V388l80.3-20.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-30V66.1c0-23-24.2-38-44.8-27.7l-9.6 4.8c-46.3 23.2-100.8 23.2-147.1 0c-35.1-17.6-75.4-22-113.5-12.5L48 52V24zm0 77.5l96.6-24.2c27-6.7 55.5-3.6 80.4 8.8c54.9 27.4 118.7 29.7 175 6.8V334.7l-24.4 9.1c-33.7 12.6-71.2 10.7-103.4-5.4c-48.2-24.1-103.3-30.1-155.6-17.1L48 338.5v-237z"
+          />
+        </svg>
+        Flag
+      </button>
+    </div>
+
+    <!-- Reply form start -->
+    <!-- <form method="POST" class="reply-form d-none" id="comment-1-reply-form">
+      <textarea placeholder="Reply to comment" rows="4"></textarea>
+      <button type="submit">Submit</button>
+      <button
+        type="button"
+        data-toggle="reply-form"
+        data-target="comment-1-reply-form"
+      >
+        Cancel
+      </button>
+    </form> -->
     <app-comment-form
       buttonVal="Reply"
       [hasCancelButtonForReply]="hasCancelButtonForReply"
       [hasCancelButton]="false"
-      [commentId]="comments.id"
+      [comment]="comments"
+      (dataEventToComment)="receiveData($event)"
     ></app-comment-form>
-    <hr class="h-px my-2 bg-gray-800 border-0 dark:bg-gray-700" />
+    <!-- Reply form end -->
+  </div>
 
-    <div class="replies" *ngIf="comments.linkedComments">
+  <div class="replies">
+    <!-- Comment 2 start -->
+    <div class="replies" *ngIf="comments.children">
       <app-comments
-        *ngFor="let linkedComment of comments.linkedComments"
-        [comments]="linkedComment"
+        *ngFor="let child of comments.children"
+        [comments]="child"
         [replyTo]="comments.user.username"
       ></app-comments>
+      <!-- below if condition this.totalPage > this.currentPage + 1 && comments.children.length > 4 -->
+      <button
+        *ngIf="comments.children.length >= 2 && !isLast && comments.hasMore"
+        style="border: none"
+        class="load-more"
+        (click)="nextReply(comments)"
+      >
+        More Replies
+      </button>
+
+      <!-- Comment 2 end -->
+      <!-- <a href="#load-more">Load more replies</a> -->
     </div>
   </div>
-</div>
+</details>
 
-<!-- <p>comments works!</p>
-<div>
-  Send By: {{ comments.user.username }} |
-  {{ replyTo ? "ReplyTo: " + replyTo : "" }}
-  <br />
-  {{ comments.message }}
-  {{ comments.createdAt }}
-  <br />
-  -------------------------
-</div>
-<app-comments
-  *ngFor="let linkedComment of comments.linkedComments"
-  [comments]="linkedComment"
-  [replyTo]="comments.user.username"
-></app-comments> -->
+<!-- Comment 1 end -->
